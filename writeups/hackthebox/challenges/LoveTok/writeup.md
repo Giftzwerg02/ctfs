@@ -80,6 +80,9 @@ To summarize: Although some characters get escaped, we can still run PHP-String 
 
 1. Add a second URL-GET-Param that contains our command-injection payload. e.g.: `http://...&1=<anything>`. Note: I thought that the article used a number as the key so that we do not have to quote it to access the value, which would've been a problem since we cannot quote anything. But we can "exploit" PHP's String-Interpolation to bypass the need of quotes (which is very cursed!)
 
+- 
+
+
 ```php
 <?php
 $c = array("foo" => 3);
