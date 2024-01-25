@@ -151,7 +151,7 @@ return response(jsonRes['message'])
 ```
 
 So, doing basic boolean-algebra: `!(0 < x or x < 0) <=> !(0 < x) and !(x < 0) <=> x = 0`. So the only accepted value here is that `amount = 0`.
-However when looking at the php-backend, we now that we have to set `$amount = 1337`.
+However when looking at the php-backend, we know that we have to set `$amount = 1337`.
 So we now again have boolean-algebra: `x = 0 and x = 1337`, which is a very simple contradiciton. So this cannot possibly be the answer to this CTF, if it where, it would mathematically be unsolv...
 
 ```python
